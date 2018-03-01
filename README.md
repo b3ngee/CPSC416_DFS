@@ -1,4 +1,4 @@
-System overview
+## System overview
 
 There are two kinds of nodes in the system: clients and a single server. The clients are connected in a star topology to the server: none of the clients interact directly with each other and instead communicate indirectly through the central server. Each client is composed of a DFS client library and an application that imports that library and uses it to interact with the DFS using the DFS API. Each client also has access to local persistent disk storage.
  
@@ -9,7 +9,7 @@ In DFS the server is used for coordination between clients and does not store an
 Your DFS system must provide serializable file access semantics and gracefully handle (1) joining clients, (2) failing clients, and (3) clients that access file contents while they are disconnected from the server.
 
 
-DFS API
+## DFS API
 
 DFS files are accessed in units called chunks. Each chunk is a fixed size byte array of 32 bytes. In the API a chunk is identified by a chunkNum of type uint8, so a file could contain at a maximum 256 chunks:
 
@@ -21,7 +21,7 @@ DFS files must have alpha-numeric names that are 1-16 characters long. DFS filen
 - (DREAD) mode for reading while being potentially disconnected (from the server). In DREAD mode, the application observes potentially stale file contents using Read calls. In this mode Write calls return an error.
 
 
-File access semantics
+## File access semantics
 
 Your system must provide serializability to all READ and WRITE mode operations on the same file . That is, regardless of the order in which DFS API calls were issued by the set of all the applications in the system, the order of these completed operations for the same file should be observable to all applications as (1) a single serial order, and (2) this order should be identical across all applications. In other words, to applications your DFS system must behave as if it was a local file system. However, you do not need to provide serializability across files and you do not need to provide these semantics for DREAD operations.
 
@@ -47,7 +47,7 @@ In practice, the above semantics imply the following properties (among others):
 - A file that was successfully opened in READ or WRITE modes must later successfully open in DREAD mode (since some version of the file is guaranteed to be available to the client locally offline). Note, however, that the reverse does not have to be true: a file open in DREAD mode could succeed by fetching the file (if there is connectivity when open is called), without relying on a previously fetched version of the file. However, the exact semantics of open in DREAD mode are up to you to finalize, as long as you are consistent.
 
 
-Handling failures
+## Handling failures
 
 Your system must gracefully handle fail-stop client failures. That is, in your system clients may fail by halting. When this happens, the server should shield other clients from the failure and the rest of the system should (eventually) resume normal operation with minimal disruption to other clients. For example, if a client A is writing a file, and client B fails, then A should not observe B's failure (e.g., A's Write call should not fail).
 
