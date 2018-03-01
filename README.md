@@ -2,7 +2,7 @@ System overview
 
 There are two kinds of nodes in the system: clients and a single server. The clients are connected in a star topology to the server: none of the clients interact directly with each other and instead communicate indirectly through the central server. Each client is composed of a DFS client library and an application that imports that library and uses it to interact with the DFS using the DFS API. Each client also has access to local persistent disk storage.
  
-![Alt text](/images/dfs_1.jpg?raw=true “DFS Overview“)
+![dfs_1](https://user-images.githubusercontent.com/13499195/36867554-581f4f9c-1d4a-11e8-8c90-2b73ee319503.jpg)
 
 In DFS the server is used for coordination between clients and does not store any application data. However, the server may store metadata, such as which client has which files, which client has opened which files, etc. All application data must live on the clients, specifically on their local disks (to survive client failures). Although clients communicate indirectly through the server, a client should make no assumptions about other clients in the system -- about other clients' identities, how many clients there are at any point in time, which client stores what files, etc. Such client meta-data should, if necessary, be stored at the server.
 
